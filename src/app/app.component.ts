@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FavoriteChangedEventArgs } from './favorite/favorite.component';
 
 @Component({
   selector: 'app-root',
@@ -7,19 +6,17 @@ import { FavoriteChangedEventArgs } from './favorite/favorite.component';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  tweet = {
-    body: 'Here is the body of a tweet...',
-    isLiked: false,
-    likesCount: 0
-  };
+  courses;
 
-  onFavoriteChanged(eventArgs: FavoriteChangedEventArgs) {
-    console.log('Favorite changed to:', eventArgs);
+  loadCourses() {
+    this.courses = [
+      { id: 1, name: 'course1 ' },
+      { id: 2, name: 'course2 ' },
+      { id: 3, name: 'course3 ' }
+    ];
   }
 
-  onLikeSelected() {
-    console.log('Change likes!');
-    this.tweet.isLiked = !this.tweet.isLiked;
-    this.tweet.likesCount += this.tweet.isLiked === true ? 1 : -1;
+  trackCourse(course) {
+    return course ? course.id : undefined;
   }
 }

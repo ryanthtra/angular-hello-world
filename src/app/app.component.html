@@ -1,2 +1,6 @@
-<app-like [likesCount]='tweet.likesCount' [isActive]='tweet.isLiked' (likeSelected)='onLikeSelected()'>
-</app-like>
+<button (click)="loadCourses()">Load Courses</button>
+<ul>
+  <li *ngFor="let course of courses; trackBy: trackCourse">
+    {{ course.name }}
+  </li>
+</ul>
