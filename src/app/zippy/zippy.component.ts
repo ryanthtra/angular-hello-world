@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-zippy',
   templateUrl: './zippy.component.html',
   styleUrls: ['./zippy.component.css']
 })
-export class ZippyComponent implements OnInit {
+export class ZippyComponent {
+  @Input('title')
+  title: string;
 
-  constructor() { }
+  isExpanded = false;
 
-  ngOnInit() {
+  constructor() {}
+
+  expandPanel() {
+    this.isExpanded = !this.isExpanded;
   }
-
 }
