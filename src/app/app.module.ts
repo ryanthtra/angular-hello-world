@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
+import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { CoursesComponent } from './courses.component';
@@ -16,6 +17,9 @@ import { LikeComponent } from './like/like.component';
 import { ZippyComponent } from './zippy/zippy.component';
 import { ContactFormComponent } from './contact-form/contact-form.component';
 import { CourseFormComponent } from './course-form/course-form.component';
+import { SignupFormComponent } from './signup-form/signup-form.component';
+import { PostsComponent } from './posts/posts.component';
+import { PostService } from './services/post.service';
 
 @NgModule({
   declarations: [
@@ -30,10 +34,12 @@ import { CourseFormComponent } from './course-form/course-form.component';
     LikeComponent,
     ZippyComponent,
     ContactFormComponent,
-    CourseFormComponent
+    CourseFormComponent,
+    SignupFormComponent,
+    PostsComponent
   ],
-  imports: [BrowserModule, FormsModule],
-  providers: [CoursesService, AuthorsService],
+  imports: [BrowserModule, FormsModule, ReactiveFormsModule, HttpModule],
+  providers: [CoursesService, AuthorsService, PostService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
