@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { PostService } from '../services/post.service';
-// import 'rxjs/add/operator/catch'; // Old implementation
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-posts',
