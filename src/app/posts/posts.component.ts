@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PostService } from '../services/post.service';
+import { AppError } from '../common/app-error';
+import { NotFoundError } from '../common/not-found-error';
+import { BadInput } from '../common/bad-input';
 
 @Component({
   selector: 'app-posts',
@@ -10,32 +13,26 @@ export class PostsComponent implements OnInit {
   posts: any[];
 
   ngOnInit() {
-    this.service.getPosts().subscribe(
-      (response) => {
-        this.posts = response.json();
-      },
-      (error) => {
-        alert('Get posts: an unexpected error occurred.');
-        console.log(error); // Would store it in a log file on server.
-      }
-    );
+    this.service.getAll().subscribe((posts) => (this.posts = posts));
   }
   constructor(private service: PostService) {}
 
   createPost(input: HTMLInputElement) {
     let post = { title: input.value };
+    this.posts.splice(0, 0, post);
+
     input.value = '';
-    this.service.createPost(post).subscribe(
-      (response) => {
-        post['id'] = response.json().id;
-        this.posts.splice(0, 0, post);
+    this.service.create(post).subscribe(
+      (newPost) => {
+        post['id'] = newPost.id;
       },
-      (error: Response) => {
-        if (error.status === 400) {
-          //this.form.setErrors(error.json());
+      (error: AppError) => {
+        this.posts.splice(0, 1);
+
+        if (error instanceof BadInput) {
+          // this.form.setErrors(error.originalError);
         } else {
-          alert('Create post: an unexpected error occurred.');
-          console.log(error);
+          throw error;
         }
       }
     );
@@ -43,31 +40,28 @@ export class PostsComponent implements OnInit {
 
   updatePost(post) {
     // If back-end supported, PATCH used to update only the properties that we want updated.
-    this.service.updatePost(post, { isRead: true }).subscribe(
-      (response) => {
-        console.log(response.json());
-      },
-      (error) => {
-        alert('Update post: an unexpected error occurred.');
-        console.log(error);
-      }
-    );
+    this.service.update(post, { isRead: true }).subscribe((updatedPost) => {
+      console.log(updatedPost);
+    });
     // PUT also updates, but must pass the entire object whose properties we want updated as request payload.
     // this.http.put(this.url, JSON.stringify(post));
   }
 
   deletePost(post) {
-    this.service.deletePost(post.id).subscribe(
-      (response) => {
-        let index = this.posts.indexOf(post);
-        this.posts.splice(index, 1);
+    let index = this.posts.indexOf(post);
+    this.posts.splice(index, 1);
+
+    this.service.delete(post.id).subscribe(
+      () => {
+        // let index = this.posts.indexOf(post);
+        // this.posts.splice(index, 1);
       },
-      (error: Response) => {
-        if (error.status === 404) {
-          alert('This post has already been deleted!');
+      (error: AppError) => {
+        this.posts.splice(index, 0, post);
+        if (error instanceof NotFoundError) {
+          alert('Post has already been deleted!');
         } else {
-          alert('Delete post: an unexpected error occurred.');
-          console.log(error);
+          throw error;
         }
       }
     );
